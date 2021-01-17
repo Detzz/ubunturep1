@@ -1,0 +1,128 @@
+#include "cub3d.h"
+
+static int	g_j;
+static int	g_i;
+static int	g_spt_id;
+
+
+
+
+void    traitsprite(int k, int xoffset, int yoffset)
+{
+    int i;
+    int color;
+    int j;
+
+    i = -1;
+   // printf("here %d\n",spritesize);
+    while (++i < spritesize -1)
+    {
+        if (xoffset + i <= 0 || xoffset + i > param.g_width)
+			continue ;
+        if (g_RAYS[(xoffset + i)][9] < sprite[k].distance)
+            continue ;
+        // printf("%d\n", yoffset);
+		j = -1;
+		while (++j < spritesize)
+		{
+			if (yoffset + j <= 0 || yoffset + j > param.g_height)
+				continue ;
+			color = sprite[k].data[sprite[k].width * (j *
+					sprite[k].heigth / spritesize) +
+					(i * sprite[k].width / spritesize)];
+            my_mlx_pixel_put(&img, i + xoffset, j + yoffset, color);
+		}
+    }
+}
+
+ void   analyse_sprite(int i)
+ {  
+     float x_offset;
+     float y_offset;
+
+     x_offset = 0;
+     y_offset = 0;
+     spritesize = 0;
+
+     g_cord.rotationangle = newray(g_cord.rotationangle);
+
+     sprite[i].angle = atan2(sprite[i].mapyxord - g_cord.y , sprite[i].mapxcord - g_cord.x);
+     while (sprite[i].angle - g_cord.rotationangle > M_PI)
+		sprite[i].angle -= 2 * M_PI;
+     sprite[i].distance = get_distance(g_cord.x,g_cord.y,sprite[i].mapxcord,sprite[i].mapyxord);
+	 while (sprite[i].angle - g_cord.rotationangle < -M_PI)
+		sprite[i].angle += 2 * M_PI;
+
+     spritesize = (param.g_width / sprite[i].distance * TITLESIZE);
+
+     
+	 x_offset = (sprite[i].angle - g_cord.rotationangle) /
+		64 + (param.g_width / 2 - spritesize / 2);
+                //           printf("g_spritecount ===== %d\n" ,spritesize);
+
+	 y_offset = (param.g_height / 2 - spritesize / 2);
+     traitsprite(i, x_offset, y_offset);
+
+
+ }
+ void		ft_sprite_sort(void)
+{
+	int			i;
+	int			j;
+	g_param	*tmp;
+
+    tmp = malloc(sizeof(g_param) * 2);
+    // printf("%d g_spriiiiiitecount\n", g_spritecount);
+
+	i = 0;
+	while (i < g_spritecount)
+	{
+		j = 0;
+		while (j < g_spritecount - i - 1)
+		{
+			if (sprite[i].distance <= sprite[j + 1].distance)
+			{
+				tmp[0] = sprite[j];
+				sprite[j] = sprite[j + 1];
+				sprite[j + 1] = tmp[0];
+			}
+			j++;
+		}
+		i++;
+	}
+}
+
+void		update_sprite(void)
+{
+	g_spt_id = 0;
+	g_j = -1;
+	while (++g_j < param.num_rows)
+	{
+		g_i = -1;
+		while (++g_i < param.num_col)
+		{
+			if (param.s5[g_j][g_i] == '2')
+			{
+				sprite[g_spt_id].mapyxord = (g_j * TITLESIZE) + TITLESIZE / 2;
+				sprite[g_spt_id].mapxcord= (g_i * TITLESIZE) + TITLESIZE / 2;
+				sprite[g_spt_id].distance = get_distance(
+					sprite[g_spt_id].mapyxord, sprite[g_spt_id].mapxcord,
+					g_cord.y, g_cord.x);
+				g_spt_id++;
+			}
+		}
+	}
+	ft_sprite_sort();
+}
+ void sprite_function(void)
+ {
+     int i;
+
+     i = 0;
+     ft_sprite_sort();
+     while (i < g_spritecount)
+     {
+         analyse_sprite( i);
+         i++;
+     }
+ }
