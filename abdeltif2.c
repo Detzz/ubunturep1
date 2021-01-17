@@ -31,30 +31,30 @@ int hasWallAt(float x, float y)
 
 int key_release(int key)
 {
-	if (key == 122) // linux 122 mac 13
+	if (key == 13) // linux 122 mac 13
 		g_cord.walkdirection = 0; 
-	else if (key == 115) // linux 115 mac 1
+	else if (key == 1) // linux 115 mac 1
 		g_cord.walkdirection = 0;
-	else if (key == 65361)// left // linux 65361 mac 123
+	else if (key == 123)// left // linux 65361 mac 123
 		g_cord.turndirection = 0;
-	else if (key == 65363)// right //linux 65363 mac 124 
+	else if (key == 124)// right //linux 65363 mac 124 
 		g_cord.turndirection = 0;
 	return (0);
 }
 
 int key_press(int key)
 {
-	if (key == 122)
+	if (key == 13)
 		g_cord.walkdirection = 1;
-	else if (key == 115)
+	else if (key == 1)
 		g_cord.walkdirection = -1;
-	else if (key == 65361)// left
+	else if (key == 123)// left
 		g_cord.turndirection = -1;
-	else if (key == 65363)
+	else if (key == 124)
 	{// right
 	printf("lopooo \n") ;
 		g_cord.turndirection = 1;}
-	else if (key == 65307) // linux 65307 mac 53
+	else if (key == 53) // linux 65307 mac 53
 		exit(1);
 	return (0);
 

@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 #include <stdint.h>
-#include "../mlx.h"
+#include "mlx.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
@@ -19,6 +19,7 @@
 # include <unistd.h>
 #include <fcntl.h> 
 #include <string.h>
+#include "libft.h"
 # define RAD(x) (x * 180 / M_PI)
 #define BUFFER_SIZE 30
 //const float Fongle = 60 *( M_PI / 180);

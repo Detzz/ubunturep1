@@ -77,13 +77,16 @@ void find_zero_in_map(char **map)
 	while (i < param.num_rows + 2)
 	{
 		j = 0;
-		while (map[i][j] != '\0')
+		while (j <param.num_col + 2)
 		{
+			
 			if (map[i][j] == '0')
 			{
+				printf("dsdsdsdsds\n");
 				if ( map[i][j - 1] == ' ' || map[i][j + 1] == ' ' || map[i - 1][j] == ' ' || map[i + 1][j] == ' ' )
 				{
-					printf("ERROE MAP NOT CLOSED %d /// %d",i,j);
+					printf("i == %d j == %d\n",i,j);
+					printf("ERROE MAP NOT CLOS i = |%c| /// j ==|%c|//  i - 1  == |%c| //  i + 1 == |%c| // j  + 1 == |%c|\n ",map[i][j],map[i][j - 1], map[i][j + 1] ,map[i - 1][j] ,map[i + 1][j]);
 					free(map);
 					exit(1);
 				}
@@ -142,8 +145,6 @@ void TREATMAP(char *string)
 
 	i = 0;
 	
-
-	i = 0;
 	while (i < param.num_rows)
 	{
 
@@ -287,6 +288,7 @@ int resolution(char *line)
 	int c;
 	int d;
 	char **s;
+	int j;
 	c = 0;
 	s = ft_split_whitespaces(line);
 	if (s[3] != '\0')
@@ -295,6 +297,32 @@ int resolution(char *line)
 		free(s);
 		exit(0);
 	}
+	j= 0;
+	 while (j <strlen(s[1]) )
+	 {
+		 
+		 if (ft_isdigit(s[1][j]) == 1)
+		 j++;
+		 else
+		 {
+			 printf("ERROR WITDH IS NOT NUM");
+			 free(s);
+			 exit(1);
+		 }
+	 }
+	 j= 0;
+	while (j <strlen(s[2]))
+	 {
+		 if (ft_isdigit(s[2][j]) == 1)
+		 j++;
+		 else
+		 {
+			 printf("ERROR HEIGHT IS NOT NUM");
+			 free(s);
+			 exit(1);
+		 }
+		 
+	 }
 	if (atoi(s[1]) > 2560)
 	param.g_width = 2560;
 	else
