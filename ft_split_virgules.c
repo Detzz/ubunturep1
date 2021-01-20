@@ -3,6 +3,7 @@ int		taillevirgules(char *s)
 {
 	int	i;
 	int	count;
+	virgulecount = 0;
 
 	i = -1;
 	count = 1;
@@ -10,6 +11,7 @@ int		taillevirgules(char *s)
 	{
 		if (s[i] == ',')
 		{
+			virgulecount++;
 			if (s[i + 1] != '\0' && s[i + 1] != ',')
 				count++;
 		}

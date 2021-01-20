@@ -203,6 +203,20 @@ float	deg(float x);
 void	to_sort(void);
 void	to_sprite(void);
 void	draw_sprite(int id);
+int		linecount;
+int		mapfinding;
+int 	virgulecount;
 
+typedef struct s_check
+{
+	int	Resolution;
+	int	TextureNo;
+	int	TextureSu;
+	int	TextureWe;
+	int	TextureEa;
+	int	Sprite;
+	int	Floor;
+	int	Ceillig;
+}c_param;
 
-
+c_param check;

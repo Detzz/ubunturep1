@@ -4,11 +4,23 @@ void analyse(char *line)
 {
 	int i = 0;
 	int j = 0;
+	char **d;
 	if (line[0] == ' ' || line [0] == '1')
 	{
+		d = ft_split_whitespaces(line);
+	/*	printf("d === |%s| \n",d[0]);
+		if(d[0][1] != '1' && d[0][1] != '0')
+		{
+			free(line);*/
+			free(d);
+			/*printf("ERROR");
+			exit(1);
+		}*/
+		mapfinding = 1;
 		s = ft_strjoin(s,line);
 		//printf("%s \n",line);
 		s = ft_strjoin(s, "\n");
+		//linecount++;
 	}
 	if (line[0] == 'R' && line[1] == ' ')
 		resolution(line);
@@ -31,35 +43,142 @@ void texture(char *line)
 {
 	char **s;
 	int j;
+	int fd;
 
 	s = ft_split_whitespaces(line);
 	if (s[2] != '\0')
 	{
-		printf("ERROR MORE THAN 2 ARGUMENTS");
+		printf("ERROR ");
 		free(s);
 		exit(0);
 	}
 	if(s[0][0] == 'N' && s[0][1] == 'O' )
+	{if(check.TextureNo != 0)
+	{
+		printf("ERROR Double parametre Of TextureNo");
+		free(s);
+		exit(0);
+	}
+	else
+	{
+		check.TextureNo = 1;
+	}
 		tex.file[0] = strdup(s[1]);
+		if ((fd = open(tex.file[0],O_RDONLY) == -1))
+		{
+			printf("error there is no file");
+			free (s);
+			exit(1);
+		}
+
+	}
 	if(s[0][0] == 'S' && s[0][1] == 'O')
+	{if(check.TextureSu != 0)
+	{
+		printf("ERROR Double parametre Of Texture sou");
+		free(s);
+		exit(0);
+	}
+	else
+	{
+		check.TextureSu = 1;
+	}
 		tex.file[1] = strdup(s[1]);
+		if ((fd = open(tex.file[1],O_RDONLY) == -1))
+		{
+			printf("error there is no file");
+			free (s);
+			exit(1);
+		}
+	}
+		
 	if(s[0][0] == 'W' && s[0][1] == 'E' )
-		tex.file[2] = strdup(s[1]);
+		{
+			if(check.TextureWe != 0)
+	{
+		printf("ERROR Double parametre Of Texturewe");
+		free(s);
+		exit(0);
+	}
+	else
+	{
+		check.TextureWe = 1;
+	}
+			tex.file[2] = strdup(s[1]);
+		if ((fd = open(tex.file[2],O_RDONLY) == -1))
+		{
+			printf("error there is no file");
+			free (s);
+			exit(1);
+		}
+		}
 	if(s[0][0] == 'E' )
-		tex.file[3] = strdup(s[1]);
+		{if(check.TextureEa != 0)
+	{
+		printf("ERROR Double parametre Of TextureEa");
+		free(s);
+		exit(0);
+	}
+	else
+	{
+		check.TextureEa = 1;
+	}
+			tex.file[3] = strdup(s[1]);
+		if ((fd = open(tex.file[3],O_RDONLY) == -1))
+		{
+			printf("error there is no file");
+			free (s);
+			exit(1);
+		}
+		}
 	if(s[0][0] == 'S' && s[0][1] != 'O')
-		tex.file[4] = strdup(s[1]);
+		{
+			if(check.Sprite != 0)
+	{
+		printf("ERROR Double parametre Of Sprite");
+		free(s);
+		exit(0);
+	}
+	else
+	{
+		check.Sprite = 1;
+	}
+			tex.file[4] = strdup(s[1]);
+		if ((fd = open(tex.file[4], O_RDONLY) == -1))
+		{
+			printf("error there is no file");
+			free (s);
+			exit(1);
+		}
+		}
+}
+void init_param(void)
+{
+	check.Resolution = 0;
+	check.TextureNo = 0;
+	check.TextureSu = 0;
+	check.TextureWe = 0;
+	check.TextureEa = 0;
+	check.Sprite = 0;
+	check.Floor = 0;
+	check.Ceillig = 0;
 }
 void read_line()
 {
 	int fd;
 	char *line;
+	init_param();
 	fd = open("map.cub", O_RDONLY);
+		linecount = 0;
+
 	s = strdup("");
 	g_spritecount = 0;
 	while (get_next_line(fd, &line) != 0 )
 	{
+		
 		analyse(line);
+		if(mapfinding == 1)
+		linecount ++;
 		free (line);
 	}
 	TREATMAP(s);
@@ -101,6 +220,8 @@ void TREATMAP(char *string)
 	int i = 0;
 	int j = 0;
 	char *tmp;
+
+	
 	param.s5= ft_split(string,'\n');
 	function_readingmaptogivespritecount(param.s5);
 	while (param.s5[i] != '\0')
@@ -108,6 +229,15 @@ void TREATMAP(char *string)
 		i++;
 	}
 	param.num_rows = i;
+	if (linecount !=  param.num_rows)
+	{
+			printf("linecount == %d , num of rows == %d\n",linecount,param.num_rows);
+
+		printf("ERROR MAP IS OPEN");
+		free(param.s5);
+		exit(1);
+
+	}
 	int top;
 	i = 0;
 	top = 0;
@@ -185,8 +315,14 @@ void TREATMAP(char *string)
 			//if (param.s5[i][j] == ' ')
 			//	param.s5[i][j] = '1';
 			if (map[i +1][j+1] != '0' &&map[i + 1][j +1] != '1' && map [i + 1][j + 1] != '2' && map[i + 1][j + 1] != ' ' && map[i + 1][j + 1] != 'P')
-				map[i + 1][j + 1] = ' ';
-			
+				
+				{
+					printf("ERROR undefind caracter in Map");
+		free(param.s5);
+		free(map);
+		exit(1);
+		}
+
 			if (map[i + 1][j + 1] == 'P')
 			{
 				param.i = i;
@@ -207,12 +343,31 @@ void CEILLINGCOLOR(char *line)
 	int a;
 	int b;
 	int c;
+	int i;
 	s = ft_split_whitespaces(line);
 	S = ft_split_virgules(s[1]);
+	if(check.Ceillig != 0)
+	{
+		printf("ERROR Double parametre Of Ceiling");
+		free(s);
+		exit(0);
+	}
+	else
+	{
+		check.Ceillig = 1;
+	}
+	if(virgulecount != 2)
+	{
+		printf("ERROR MORE THAN 2 ARGUMENTS");
+		free(s);
+		free(S);
+		exit(0);
+	}
 	if(s[2] != '\0')
 	{
 		printf("ERROR MORE THAN 2 ARGUMENTS");
 		free(s);
+		free(S);
 		exit(0);
 	}
 	if(S[3] != '\0')
@@ -223,21 +378,22 @@ void CEILLINGCOLOR(char *line)
 	exit(0);
 
 	}
+	i = 0;
+	while (i < 3)
+	{
+		if (ft_atoi(S[i]) < 0 ||ft_atoi(S[i]) > 255)
+		{
+			printf("ERROR COLOR OUT OF RANGE [0,255]");
+			free (S);
+			free(s);
+			exit(1);
+		}
+		i++;
+	}
 	a = ft_atoi(S[0]);
-	if ( a < 0)
-	a = 0;
-	else if (a > 255)
-	a = 255;
 	b = ft_atoi(S[1]);
-	if ( b < 0)
-	b = 0;
-	else if (b > 255)
-	b = 0;
 	c = ft_atoi(S[2]);
-	if (c < 0)
-	c = 0;
-	else if (c > 255)
-	c = 255;
+	
 	param.Ceillingcolor = createRGB(a,b,c);
 }
 void FLOORCOLOR(char *line)
@@ -247,9 +403,20 @@ void FLOORCOLOR(char *line)
 	int a;
 	int b;
 	int c;
+	int i;
 	
 	s = ft_split_whitespaces(line);
 	S = ft_split_virgules(s[1]);
+	if(check.Floor != 0)
+	{
+		printf("ERROR Double parametre Of FLOORc");
+		free(s);
+		exit(0);
+	}
+	else
+	{
+		check.Floor = 1;
+	}
 		if (s[2] != '\0')
 	{
 		printf("ERROR MORE THAN 2 ARGUMENTS");
@@ -265,21 +432,21 @@ void FLOORCOLOR(char *line)
 
 	}
 
-	a = ft_atoi(S[0]);
-	if ( a < 0)
-	a = 0;
-	else if (a > 255)
-	a = 255;
+	i = 0;
+	while (i < 3)
+	{
+		if (ft_atoi(S[i]) < 0 ||ft_atoi(S[i]) > 255)
+		{
+			printf("ERROR COLOR OUT OF RANGE [0,255]");
+			free (S);
+			free(s);
+			exit(1);
+		}
+		i++;
+	}
+		a = ft_atoi(S[0]);
 	b = ft_atoi(S[1]);
-	if ( b < 0)
-	b = 0;
-	else if (b > 255)
-	b = 0;
 	c = ft_atoi(S[2]);
-	if (c < 0)
-	c = 0;
-	else if (c > 255)
-	c = 255;
 	param.Florcolor = createRGB(a,b,c);
 }
 
@@ -291,6 +458,17 @@ int resolution(char *line)
 	int j;
 	c = 0;
 	s = ft_split_whitespaces(line);
+	if(check.Resolution != 0)
+	{
+		printf("ERROR Double parametre Of resolution");
+		free(s);
+		exit(0);
+	}
+	else
+	{
+		check.Resolution = 1;
+	}
+	
 	if (s[3] != '\0')
 	{
 		printf("ERROR MORE THAN 3 ARGUMENTS");
@@ -375,6 +553,7 @@ int main()
 	read_line();
 	init();
 	init_sprite();
+	
 	g_mlx_ptr = mlx_init();
 	g_win_ptr = mlx_new_window(g_mlx_ptr, param.g_width, param.g_height, "mlx_abdel");
 	img.img = mlx_new_image(g_mlx_ptr, param.g_width, param.g_height);
