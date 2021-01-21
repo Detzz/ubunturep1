@@ -7,20 +7,9 @@ void analyse(char *line)
 	char **d;
 	if (line[0] == ' ' || line [0] == '1')
 	{
-		d = ft_split_whitespaces(line);
-	/*	printf("d === |%s| \n",d[0]);
-		if(d[0][1] != '1' && d[0][1] != '0')
-		{
-			free(line);*/
-			free(d);
-			/*printf("ERROR");
-			exit(1);
-		}*/
 		mapfinding = 1;
 		s = ft_strjoin(s,line);
-		//printf("%s \n",line);
 		s = ft_strjoin(s, "\n");
-		//linecount++;
 	}
 	if (line[0] == 'R' && line[1] == ' ')
 		resolution(line);
@@ -39,21 +28,11 @@ void analyse(char *line)
 	if (line[0] == 'C' && line[1] == ' ')
 		CEILLINGCOLOR(line);
 }
-void texture(char *line)
-{
-	char **s;
-	int j;
-	int fd;
 
-	s = ft_split_whitespaces(line);
-	if (s[2] != '\0')
-	{
-		printf("ERROR ");
-		free(s);
-		exit(0);
-	}
-	if(s[0][0] == 'N' && s[0][1] == 'O' )
-	{if(check.TextureNo != 0)
+
+void	traitNotexture(char **s ,int fd)
+{
+	if(check.TextureNo != 0)
 	{
 		printf("ERROR Double parametre Of TextureNo");
 		free(s);
@@ -70,10 +49,11 @@ void texture(char *line)
 			free (s);
 			exit(1);
 		}
+}
 
-	}
-	if(s[0][0] == 'S' && s[0][1] == 'O')
-	{if(check.TextureSu != 0)
+void	TRAITSotexture(char **s,int fd)
+{
+	if(check.TextureSu != 0)
 	{
 		printf("ERROR Double parametre Of Texture sou");
 		free(s);
@@ -89,11 +69,11 @@ void texture(char *line)
 			printf("error there is no file");
 			free (s);
 			exit(1);
-		}
-	}
-		
-	if(s[0][0] == 'W' && s[0][1] == 'E' )
-		{
+		}	
+}
+
+void	traitWetexture(char **s, int fd)
+{
 			if(check.TextureWe != 0)
 	{
 		printf("ERROR Double parametre Of Texturewe");
@@ -112,8 +92,10 @@ void texture(char *line)
 			exit(1);
 		}
 		}
-	if(s[0][0] == 'E' )
-		{if(check.TextureEa != 0)
+
+void traitEstexture(char **s, int fd)
+{
+		if(check.TextureEa != 0)
 	{
 		printf("ERROR Double parametre Of TextureEa");
 		free(s);
@@ -130,10 +112,11 @@ void texture(char *line)
 			free (s);
 			exit(1);
 		}
-		}
-	if(s[0][0] == 'S' && s[0][1] != 'O')
-		{
-			if(check.Sprite != 0)
+		
+}
+void	traitspactex(char **s,int fd)
+{
+	if(check.Sprite != 0)
 	{
 		printf("ERROR Double parametre Of Sprite");
 		free(s);
@@ -150,7 +133,30 @@ void texture(char *line)
 			free (s);
 			exit(1);
 		}
-		}
+}
+void texture(char *line)
+{
+	char **s;
+	int j;
+	int fd;
+
+	s = ft_split_whitespaces(line);
+	if (s[2] != '\0')
+	{
+		printf("ERROR ");
+		free(s);
+		exit(0);
+	}
+	if(s[0][0] == 'N' && s[0][1] == 'O' )
+	traitNotexture(s,fd);
+	if(s[0][0] == 'S' && s[0][1] == 'O')
+	TRAITSotexture(s,fd);
+	if(s[0][0] == 'W' && s[0][1] == 'E' )
+	traitWetexture(s,fd);
+	if(s[0][0] == 'E' )
+	traitEstexture(s,fd);
+	if(s[0][0] == 'S' && s[0][1] != 'O')
+	traitspactex(s,fd);
 }
 void init_param(void)
 {
@@ -191,17 +197,13 @@ void find_zero_in_map(char **map)
 
 	i = 0;
 	j = 0;
-	printf("i m heeeere fucking here  \n");
-
 	while (i < param.num_rows + 2)
 	{
 		j = 0;
 		while (j <param.num_col + 2)
-		{
-			
+		{	
 			if (map[i][j] == '0')
 			{
-				printf("dsdsdsdsds\n");
 				if ( map[i][j - 1] == ' ' || map[i][j + 1] == ' ' || map[i - 1][j] == ' ' || map[i + 1][j] == ' ' )
 				{
 					printf("i == %d j == %d\n",i,j);
@@ -215,20 +217,9 @@ void find_zero_in_map(char **map)
 		i++;
 	}	
 	}
-void TREATMAP(char *string)
-{
-	int i = 0;
-	int j = 0;
-	char *tmp;
 
-	
-	param.s5= ft_split(string,'\n');
-	function_readingmaptogivespritecount(param.s5);
-	while (param.s5[i] != '\0')
-	{
-		i++;
-	}
-	param.num_rows = i;
+void	handleerroe1()
+{
 	if (linecount !=  param.num_rows)
 	{
 			printf("linecount == %d , num of rows == %d\n",linecount,param.num_rows);
@@ -238,9 +229,14 @@ void TREATMAP(char *string)
 		exit(1);
 
 	}
+}
+
+void	findingnumofcols()
+{
+	int i;
 	int top;
+	int j;
 	i = 0;
-	top = 0;
 	while(i < param.num_rows)
 	{
 		j = 0;
@@ -251,11 +247,20 @@ void TREATMAP(char *string)
 		}
 		i++;
 	}
-		g_sp = malloc(sizeof(g_param) * (g_spritecount + 1));
 	param.num_col =  top ;
-	char **map;
+
+}
+
+char **Remplirmap(char **map)
+
+{
+	int i;
+	int j;
+
+i = 0;
+
+	g_sp = malloc(sizeof(g_param) * (g_spritecount + 1));
 	map = malloc(sizeof(char*) * (param.num_rows + 3));
-	i = 0;
 	while ( i < param.num_rows + 3)
 	{
 		map[i] = malloc(sizeof(char) * (param.num_col + 3));
@@ -272,9 +277,17 @@ void TREATMAP(char *string)
 		}
 		i++;
 	}
+	return(map);
+}
+
+char **Swappingmaps(char **map)
+
+{	
+	int i;
+	int j;
 
 	i = 0;
-	
+	j = 0;
 	while (i < param.num_rows)
 	{
 
@@ -286,43 +299,29 @@ void TREATMAP(char *string)
 			j++;
 		}
 		i++;
-		printf("im fucking here i = %d \n",i);
 	}
-		
+return(map);
+
+}
+
+void	handleerror2(char **map)
+{
+	int i;
+	int j;
 
 	i = 0;
-	while ( i < param.num_rows + 2)
-	{
-		j = 0;
-		while (j < param.num_col + 2)
-		{
-			printf("%c",map[i ][j ]);
-			j++;
-		}
-		printf("\n");
-		
-		i++;
-	}
-	
-	find_zero_in_map(map);
- 	i = 0;
-	int k = 0;
-	while (i < param.num_rows )
+		while (i < param.num_rows )
 	{
 		j = 0;
 		while (j < param.num_col )
 		{
-			//if (param.s5[i][j] == ' ')
-			//	param.s5[i][j] = '1';
-			if (map[i +1][j+1] != '0' &&map[i + 1][j +1] != '1' && map [i + 1][j + 1] != '2' && map[i + 1][j + 1] != ' ' && map[i + 1][j + 1] != 'P')
-				
+			if (map[i +1][j+1] != '0' &&map[i + 1][j +1] != '1' && map [i + 1][j + 1] != '2' && map[i + 1][j + 1] != ' ' && map[i + 1][j + 1] != 'P')		
 				{
 					printf("ERROR undefind caracter in Map");
 		free(param.s5);
 		free(map);
 		exit(1);
 		}
-
 			if (map[i + 1][j + 1] == 'P')
 			{
 				param.i = i;
@@ -330,11 +329,56 @@ void TREATMAP(char *string)
 				map[i + 1][j + 1] = '0';
 			} 
 			j++;
-
 		}
 		i++;
 	}
+}
+void TREATMAP(char *string)
+{
+	int i = 0;
+	int j = 0;
+		char **map;
+
+	param.s5= ft_split(string,'\n');
+	function_readingmaptogivespritecount(param.s5);
+	while (param.s5[i] != '\0')
+		i++;
+	param.num_rows = i;
+	findingnumofcols();
+	map = Remplirmap(map);
+	map = Swappingmaps(map);
+	find_zero_in_map(map);
+ 	i = 0;
+	handleerror2(map);
+}
+void	colorrangecheck(char **s,char **S)
+{
+	int i;
 	i = 0;
+	while (i < 3)
+	{
+		if (ft_atoi(S[i]) < 0 ||ft_atoi(S[i]) > 255)
+		{
+			printf("ERROR COLOR OUT OF RANGE [0,255]");
+			free (S);
+			free(s);
+			exit(1);
+		}
+		i++;
+	}
+}
+
+void	checkfloorCeilingparam(int check,char **s,char **S)
+{
+		if(check != 0)
+	{
+		printf("ERROR Double parametre Of FLOORc");
+		free(s);
+		free(S);
+		exit(0);
+	}
+	else
+		check = 1;
 }
 void CEILLINGCOLOR(char *line)
 {
@@ -346,56 +390,26 @@ void CEILLINGCOLOR(char *line)
 	int i;
 	s = ft_split_whitespaces(line);
 	S = ft_split_virgules(s[1]);
-	if(check.Ceillig != 0)
-	{
-		printf("ERROR Double parametre Of Ceiling");
-		free(s);
-		exit(0);
-	}
-	else
-	{
-		check.Ceillig = 1;
-	}
-	if(virgulecount != 2)
-	{
-		printf("ERROR MORE THAN 2 ARGUMENTS");
-		free(s);
-		free(S);
-		exit(0);
-	}
-	if(s[2] != '\0')
-	{
-		printf("ERROR MORE THAN 2 ARGUMENTS");
-		free(s);
-		free(S);
-		exit(0);
-	}
-	if(S[3] != '\0')
-	{
-	printf("ERROR MORE THAN 3 ARGUMENTS ");
-	free(S);
-	free(s);
-	exit(0);
+	checkfloorCeilingparam(check.Ceillig,s,S);
 
+	if(s[2] != '\0' || S[3] != '\0' || virgulecount != 2)
+	{
+		printf("ERROR MORE THAN 2 ARGUMENTS");
+		free(s);
+		free(S);
+		exit(0);
 	}
 	i = 0;
-	while (i < 3)
-	{
-		if (ft_atoi(S[i]) < 0 ||ft_atoi(S[i]) > 255)
-		{
-			printf("ERROR COLOR OUT OF RANGE [0,255]");
-			free (S);
-			free(s);
-			exit(1);
-		}
-		i++;
-	}
+
+	colorrangecheck(s,S);
 	a = ft_atoi(S[0]);
 	b = ft_atoi(S[1]);
 	c = ft_atoi(S[2]);
 	
 	param.Ceillingcolor = createRGB(a,b,c);
 }
+
+
 void FLOORCOLOR(char *line)
 {
 	char **s;
@@ -403,48 +417,20 @@ void FLOORCOLOR(char *line)
 	int a;
 	int b;
 	int c;
-	int i;
 	
 	s = ft_split_whitespaces(line);
 	S = ft_split_virgules(s[1]);
-	if(check.Floor != 0)
-	{
-		printf("ERROR Double parametre Of FLOORc");
-		free(s);
-		exit(0);
-	}
-	else
-	{
-		check.Floor = 1;
-	}
-		if (s[2] != '\0')
+
+	checkfloorCeilingparam(check.Floor,s,S);
+if(s[2] != '\0' || S[3] != '\0' || virgulecount != 2)
 	{
 		printf("ERROR MORE THAN 2 ARGUMENTS");
 		free(s);
+		free(S);
 		exit(0);
 	}
-	if(S[3] != '\0')
-	{
-	printf("ERROR MORE THAN 3 ARGUMENTS ");
-	free(S);
-	free(s);
-	exit(0);
-
-	}
-
-	i = 0;
-	while (i < 3)
-	{
-		if (ft_atoi(S[i]) < 0 ||ft_atoi(S[i]) > 255)
-		{
-			printf("ERROR COLOR OUT OF RANGE [0,255]");
-			free (S);
-			free(s);
-			exit(1);
-		}
-		i++;
-	}
-		a = ft_atoi(S[0]);
+	colorrangecheck(s,S);
+	a = ft_atoi(S[0]);
 	b = ft_atoi(S[1]);
 	c = ft_atoi(S[2]);
 	param.Florcolor = createRGB(a,b,c);

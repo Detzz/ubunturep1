@@ -36,13 +36,13 @@ void    render3Dprojectwalls()
 			distancefromtop = j + (wallstripheight / 2) - (param.g_height / 2);
 			Textureoffsety = distancefromtop * ((float)TEXTUREHEIGHT / wallstripheight);
 			if (g_rays[i].facingupdown == 1 && g_rays[i].washithorizontal== 1)
-				Color = tex.data[1][(TEXTUREWIDTH * Textureoffsety) + Textureoffsetx];
+				Color = tex.data[0][(TEXTUREWIDTH * Textureoffsety) + Textureoffsetx];
 			if (g_rays[i].facingupdown == 0 && g_rays[i].washithorizontal== 1)
-				Color = tex.data[2][(TEXTUREWIDTH * Textureoffsety) + Textureoffsetx];
+				Color = tex.data[1][(TEXTUREWIDTH * Textureoffsety) + Textureoffsetx];
 			if (g_rays[i].washithorizontal == 0 && g_rays[i].facingrightleft == 1)
 				Color = tex.data[3][(TEXTUREWIDTH * Textureoffsety) + Textureoffsetx];
 			if (g_rays[i].washithorizontal == 0 && g_rays[i].facingrightleft == 0)
-				Color = tex.data[0][(TEXTUREWIDTH * Textureoffsety) + Textureoffsetx];
+				Color = tex.data[2][(TEXTUREWIDTH * Textureoffsety) + Textureoffsetx];
 			my_mlx_pixel_put(&img, i * WALLSTRIPWIDTH, j,Color);
 			j++;
 		}
