@@ -1,5 +1,31 @@
 #include "cub3d.h"
 
+void	horiraycasthelper(float rayangle,float ystep,float xstep)
+{
+	while (g_cord.nexthorx >= 0 && g_cord.nexthorx < param.num_col * 64 && 
+			g_cord.nexthory >= 0 && g_cord.nexthory < param.num_rows * 64)
+	{
+		float xtocheck = g_cord.nexthorx;
+		float ytocheck = g_cord.nexthory;
+
+		if (hasWallAt(xtocheck,ytocheck -= (rayfacingupdown(rayangle) == 1) ? 1 : 0) == 1)
+		{
+			g_foundhortwallhit = 1;
+			g_cord.wallhorhitx = g_cord.nexthorx;
+			g_cord.wallhorhity = g_cord.nexthory;
+
+			break;
+		}
+		else
+		{
+			g_cord.nexthorx += xstep;
+			g_cord.nexthory += ystep;
+		}
+
+	}
+}
+
+
 void  casthorizontal(float rayangle)
 {
 	float xstep;
@@ -22,29 +48,33 @@ void  casthorizontal(float rayangle)
 	g_cord.nexthorx = xintercept;
 	g_cord.nexthory = yintercept;
 
-	while (g_cord.nexthorx >= 0 && g_cord.nexthorx < param.num_col * 64 && 
-			g_cord.nexthory >= 0 && g_cord.nexthory < param.num_rows * 64)
+	horiraycasthelper( rayangle, ystep,xstep);
+
+
+}
+
+void	verraycasthelper(float rayangle,float xstep,float ystep)
+{
+		while (g_cord.nextverx >= 0 && g_cord.nextverx < param.num_col * 64 && 
+			g_cord.nextvery >= 0 && g_cord.nextvery < param.num_rows * 64)
 	{
-		float xtocheck = g_cord.nexthorx;
-		float ytocheck = g_cord.nexthory;
+		float xtocheck = g_cord.nextverx;
+		float ytocheck = g_cord.nextvery;
 
-		if (hasWallAt(xtocheck,ytocheck -= (rayfacingupdown(rayangle) == 1) ? 1 : 0) == 1)
+		if (hasWallAt(xtocheck -= (rayfacingrightleft(rayangle) == 0) ? 1 : 0,ytocheck) == 1)
 		{
-			g_foundhortwallhit = 1;
-			g_cord.wallhorhitx = g_cord.nexthorx;
-			g_cord.wallhorhity = g_cord.nexthory;
-
+			g_foundvertwallhit = 1;
+			g_cord.wallverhitx = g_cord.nextverx;
+			g_cord.wallverhity = g_cord.nextvery;
 			break;
 		}
 		else
 		{
-			g_cord.nexthorx += xstep;
-			g_cord.nexthory += ystep;
+			g_cord.nextverx += xstep;
+			g_cord.nextvery += ystep;
 		}
 
 	}
-
-
 }
 void  castvertical(float rayangle)
 {
@@ -67,26 +97,7 @@ void  castvertical(float rayangle)
 
 	g_cord.nextverx = xintercept;
 	g_cord.nextvery = yintercept;
-	while (g_cord.nextverx >= 0 && g_cord.nextverx < param.num_col * 64 && 
-			g_cord.nextvery >= 0 && g_cord.nextvery < param.num_rows * 64)
-	{
-		float xtocheck = g_cord.nextverx;
-		float ytocheck = g_cord.nextvery;
-
-		if (hasWallAt(xtocheck -= (rayfacingrightleft(rayangle) == 0) ? 1 : 0,ytocheck) == 1)
-		{
-			g_foundvertwallhit = 1;
-			g_cord.wallverhitx = g_cord.nextverx;
-			g_cord.wallverhity = g_cord.nextvery;
-			break;
-		}
-		else
-		{
-			g_cord.nextverx += xstep;
-			g_cord.nextvery += ystep;
-		}
-
-	}
+verraycasthelper( rayangle, xstep,ystep);
 }
 
 void decide()
@@ -114,20 +125,12 @@ void decide()
 		g_washitvertical = 1;
 	}
 }
-void    castalleays()
+
+void	casthelper(float rayangle,int j, int i,int columnid)
 {
-	int columnid;
-	float rayangle;
-	int i;
-	int j;
 	float ray;
-
-
-	i = 0;
-	columnid = 0;
-	rayangle = g_cord.rotationangle - (FOVANGLE / 2);
-	rayangle = newray(rayangle);
-	while (i < param.g_width)
+	
+		while (i < param.g_width)
 	{  
 		j = 0;
 		ray = newray(rayangle);
@@ -147,6 +150,21 @@ void    castalleays()
 		columnid ++;
 		i++;
 	}
+}
+void    castalleays()
+{
+	int columnid;
+	float rayangle;
+	int i;
+	int j;
+	float ray;
+
+
+	i = 0;
+	columnid = 0;
+	rayangle = g_cord.rotationangle - (FOVANGLE / 2);
+	rayangle = newray(rayangle);
+	casthelper( rayangle, j, i, columnid);
 	render3Dprojectwalls();
 
 }

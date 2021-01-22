@@ -220,3 +220,18 @@ typedef struct s_check
 }c_param;
 
 c_param check;
+typedef struct s_render
+{
+	float raydistance;
+	float distanceProjectpllane;
+	float wallstripheight;
+	int walltoppixel;
+	int wallbotpixel;
+	int Textureoffsetx;
+	int Textureoffsety;    
+	int distancefromtop;
+	unsigned int Color;
+	int i;
+	int j;
+} f_param;
+f_param g_render;

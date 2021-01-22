@@ -303,7 +303,17 @@ char **Swappingmaps(char **map)
 return(map);
 
 }
-
+void	traitrotaionangle(char c)
+{
+	if (c == 'N')
+	g_cord.rotationangle = (1.5 * M_PI);
+	if (c == 'E')
+	g_cord.rotationangle = (2 * M_PI);
+	if (c == 'W')
+	g_cord.rotationangle = ( M_PI) ;
+	if (c == 'S')
+	g_cord.rotationangle = (0.5 * M_PI);
+	}
 void	handleerror2(char **map)
 {
 	int i;
@@ -315,15 +325,16 @@ void	handleerror2(char **map)
 		j = 0;
 		while (j < param.num_col )
 		{
-			if (map[i +1][j+1] != '0' &&map[i + 1][j +1] != '1' && map [i + 1][j + 1] != '2' && map[i + 1][j + 1] != ' ' && map[i + 1][j + 1] != 'P')		
+			if (map[i +1][j+1] != '0' &&map[i + 1][j +1] != '1' && map [i + 1][j + 1] != '2' && map[i + 1][j + 1] != ' ' && map[i + 1][j + 1] != 'N')		
 				{
 					printf("ERROR undefind caracter in Map");
 		free(param.s5);
 		free(map);
 		exit(1);
 		}
-			if (map[i + 1][j + 1] == 'P')
+			if (map[i + 1][j + 1] == 'N' || map[i + 1][j + 1] == 'E'||map[i + 1][j + 1] == 'W'||map[i + 1][j + 1] == 'E')
 			{
+				traitrotaionangle(map[i + 1][j + 1]);
 				param.i = i;
 				param.j = j;
 				map[i + 1][j + 1] = '0';
@@ -436,36 +447,15 @@ if(s[2] != '\0' || S[3] != '\0' || virgulecount != 2)
 	param.Florcolor = createRGB(a,b,c);
 }
 
-int resolution(char *line)
+void	checkdigit(char **s, int i)
 {
-	int c;
-	int d;
-	char **s;
 	int j;
-	c = 0;
-	s = ft_split_whitespaces(line);
-	if(check.Resolution != 0)
-	{
-		printf("ERROR Double parametre Of resolution");
-		free(s);
-		exit(0);
-	}
-	else
-	{
-		check.Resolution = 1;
-	}
-	
-	if (s[3] != '\0')
-	{
-		printf("ERROR MORE THAN 3 ARGUMENTS");
-		free(s);
-		exit(0);
-	}
+
 	j= 0;
-	 while (j <strlen(s[1]) )
+	 while (j <strlen(s[i]) )
 	 {
 		 
-		 if (ft_isdigit(s[1][j]) == 1)
+		 if (ft_isdigit(s[i][j]) == 1)
 		 j++;
 		 else
 		 {
@@ -474,19 +464,36 @@ int resolution(char *line)
 			 exit(1);
 		 }
 	 }
-	 j= 0;
-	while (j <strlen(s[2]))
-	 {
-		 if (ft_isdigit(s[2][j]) == 1)
-		 j++;
-		 else
-		 {
-			 printf("ERROR HEIGHT IS NOT NUM");
-			 free(s);
-			 exit(1);
-		 }
-		 
-	 }
+}
+
+
+void	checkResolutionparam(int check,char **s)
+{
+		if(check != 0)
+	{
+		printf("ERROR Double parametre Of FLOORc");
+		free(s);
+		exit(0);
+	}
+	else
+		check = 1;
+}
+
+int resolution(char *line)
+{
+	char **s;
+	int j;
+
+	s = ft_split_whitespaces(line);
+	checkResolutionparam(check.Resolution,s);
+	if (s[3] != '\0')
+	{
+		printf("ERROR MORE THAN 3 ARGUMENTS");
+		free(s);
+		exit(0);
+	}
+	checkdigit(s, 1);
+	checkdigit(s, 2);
 	if (atoi(s[1]) > 2560)
 	param.g_width = 2560;
 	else
@@ -495,15 +502,14 @@ int resolution(char *line)
 	param.g_height = 1440;
 	else
 	param.g_height = atoi(s[2]);
-	
 	free (s);
-	return(c);
+	///return(c);
 }
 void init()
 {
 	g_cord.x = (TITLESIZE * param.j) + TITLESIZE/ 2;
 	g_cord.y = (TITLESIZE * param.i) + TITLESIZE/ 2;
-	g_cord.rotationangle = (M_PI) / 2;
+//	g_cord.rotationangle = (M_PI) / 2;
 	g_cord.walkdirection = 0;
 	g_cord.turndirection = 0; 
 	g_cord.movespeed = 8.0;
