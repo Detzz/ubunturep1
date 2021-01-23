@@ -217,6 +217,7 @@ typedef struct s_check
 	int	Sprite;
 	int	Floor;
 	int	Ceillig;
+	int Player;
 }c_param;
 
 c_param check;

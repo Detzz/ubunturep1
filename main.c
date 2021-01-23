@@ -168,6 +168,7 @@ void init_param(void)
 	check.Sprite = 0;
 	check.Floor = 0;
 	check.Ceillig = 0;
+	check.Player = 0;
 }
 void read_line()
 {
@@ -325,15 +326,24 @@ void	handleerror2(char **map)
 		j = 0;
 		while (j < param.num_col )
 		{
-			if (map[i +1][j+1] != '0' &&map[i + 1][j +1] != '1' && map [i + 1][j + 1] != '2' && map[i + 1][j + 1] != ' ' && map[i + 1][j + 1] != 'N')		
+			if (map[i +1][j+1] != '0' && map[i + 1][j +1] != '1' && map [i + 1][j + 1] != '2' && map[i + 1][j + 1] != ' ' && map[i + 1][j + 1] != 'N')		
 				{
 					printf("ERROR undefind caracter in Map");
 		free(param.s5);
 		free(map);
 		exit(1);
 		}
-			if (map[i + 1][j + 1] == 'N' || map[i + 1][j + 1] == 'E'||map[i + 1][j + 1] == 'W'||map[i + 1][j + 1] == 'E')
+			if (map[i + 1][j + 1] == 'N' || map[i + 1][j + 1] == 'S'||map[i + 1][j + 1] == 'W'||map[i + 1][j + 1] == 'E')
 			{
+				if(check.Player != 0)
+				{
+					free(map);
+					free(param.s5);
+					printf("double arguments on player");
+					exit(1);
+				}
+				else 
+				check.Player = 1; 
 				traitrotaionangle(map[i + 1][j + 1]);
 				param.i = i;
 				param.j = j;
