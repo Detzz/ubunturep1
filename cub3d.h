@@ -20,11 +20,11 @@
 #include <fcntl.h> 
 #include <string.h>
 #include "libft.h"
-# define RAD(x) (x * 180 / M_PI)
+//# define RAD(x) (x * 180 / M_PI)
 #define BUFFER_SIZE 30
 //const float Fongle = 60 *( M_PI / 180);
-#define TEXTUREWIDTH 64
-#define TEXTUREHEIGHT 64
+#define texturewidth 64
+#define textureheight 64
 #define TITLESIZE  64
 #define MAP_NUMS_ROWS  10
 #define MAP_NUMS_COLS  10
@@ -85,7 +85,7 @@ typedef struct s_rays {
 }t_rays ;
 t_rays *g_rays;
 
-void lOADTEXRURE();
+void loadtexture();
 void TEXTUREANALYSE(void);
 int key_release(int key);
 int key_press(int key);
@@ -236,3 +236,4 @@ typedef struct s_render
 	int j;
 } f_param;
 f_param g_render;
+char **mapp;
